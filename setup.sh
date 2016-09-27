@@ -38,16 +38,17 @@ if [ ! -x "$PYTHON" ]; then
 	echo >&2 "[ERROR] Make sure to have Python 3 installed"
 else
 	if [ ! -d "rules/" ]; then
-		echo "Creating example rules in 'rules/'"
+		mkdir "rules/"
+		echo "Creating example rules in 'rules/'..."
 		./create-rule.py -f rules/plaintext-sample.rule --plaintext \
-			"resp_p=tcp/80" "This is an example rule for connections \
+			"resp_p=80/tcp" "This is an example rule for connections \
 over TCP port 80"
 		./create-rule.py -f rules/sample-hkdf.rule \
-			"resp_h=207.25.71.142" "resp_p=tcp/80" \
+			"resp_h=207.25.71.142" "resp_p=80/tcp" \
 			"This is an example rule using HKDF for connections to \
 IP address 207.25.71.142 over TCP port 80"
 		./create-rule.py -f rules/sample-pbkdf2.rule --iterations 100000 \
-			"resp_h=207.25.71.142" "resp_p=tcp/80" \
+			"resp_h=207.25.71.142" "resp_p=80/tcp" \
 			"This is an example rule using PBKDF2 for connections to \
 IP address 207.25.71.142 over TCP port 80"
 
@@ -64,12 +65,13 @@ IP address 207.25.71.142 over TCP port 80"
 				"This is an example rule using HKDF with ${INDEX} \
 observable(s)."
 			# PDKDF2 rule
-			./create-rule.py -f rules/sample-hkdf-${INDEX}.rule \
+			./create-rule.py -f rules/sample-pdkdf2-${INDEX}.rule \
 				--iterations 100000 $OBSERVABLES \
-				"This is an example rule using HKDF with ${INDEX} \
+				"This is an example rule using PDKDF2 with ${INDEX} \
 observable(s)."
 			INDEX=$((INDEX+1))
 		done
+		echo
 	fi
 	echo "Use create-rule.py to create cryptographic rules"
 	./create-rule.py --help
